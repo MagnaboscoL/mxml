@@ -84,7 +84,7 @@ mxml_error(const char *format,		/* I - Printf-style format string */
   if (global->error_cb)
     (*global->error_cb)(s);
   else
-    fprintf(stderr, "mxml: %s\n", s);
+    MXML_LOG(MXML_LOG_ARG, "mxml: %s\n", s);
 }
 
 
@@ -196,7 +196,7 @@ _mxml_global(void)
 
   if ((global = (_mxml_global_t *)pthread_getspecific(_mxml_key)) == NULL)
   {
-    global = (_mxml_global_t *)calloc(1, sizeof(_mxml_global_t));
+    global = (_mxml_global_t *)MXML_CALLOC(1, sizeof(_mxml_global_t));
     pthread_setspecific(_mxml_key, global);
 
     global->num_entity_cbs = 1;
@@ -279,7 +279,7 @@ _mxml_global(void)
 
   if ((global = (_mxml_global_t *)TlsGetValue(_mxml_tls_index)) == NULL)
   {
-    global = (_mxml_global_t *)calloc(1, sizeof(_mxml_global_t));
+    global = (_mxml_global_t *)MXML_CALLOC(1, sizeof(_mxml_global_t));
 
     global->num_entity_cbs = 1;
     global->entity_cbs[0]  = _mxml_entity_cb;

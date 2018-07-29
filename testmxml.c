@@ -722,7 +722,7 @@ main(int  argc,				/* I - Number of command-line args */
 
     snprintf(command, sizeof(command), "leaks %d", (int)getpid());
     if (system(command))
-      puts("Unable to check for leaks.");
+      MXML_LOG(MXML_LOG_ARG,"Unable to check for leaks.");
   }
 #  endif /* __APPLE__ */
 #endif /* !WIN32 */

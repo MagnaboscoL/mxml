@@ -348,7 +348,7 @@ mxmlGetReal(mxml_node_t *node)		/* I - Node to get */
  *
  * Note: Text nodes consist of whitespace-delimited words. You will only get
  * single words of text when reading an XML file with @code MXML_TEXT@ nodes.
- * If you want the entire string between elements in the XML file, you MUST read
+ * If you want the entire string between elements in the XML file, you MUST read.
  * the XML file with @code MXML_OPAQUE@ nodes and get the resulting strings
  * using the @link mxmlGetOpaque@ function instead.
  *

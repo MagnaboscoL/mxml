@@ -42,10 +42,10 @@ mxmlElementDeleteAttr(mxml_node_t *node,/* I - Element */
   mxml_attr_t	*attr;			/* Cirrent attribute */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlElementDeleteAttr(node=%p, name=\"%s\")\n",
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlElementDeleteAttr(node=%p, name=\"%s\")\n",
           node, name ? name : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -62,9 +62,9 @@ mxmlElementDeleteAttr(mxml_node_t *node,/* I - Element */
        i > 0;
        i --, attr ++)
   {
-#ifdef DEBUG
-    printf("    %s=\"%s\"\n", attr->name, attr->value);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+    MXML_LOG(MXML_LOG_ARG,"    %s=\"%s\"\n", attr->name, attr->value);
+#endif /* MXML_ENABLE_LOGGING */
 
     if (!strcmp(attr->name, name))
     {
@@ -104,10 +104,10 @@ mxmlElementGetAttr(mxml_node_t *node,	/* I - Element node */
   mxml_attr_t	*attr;			/* Cirrent attribute */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlElementGetAttr(node=%p, name=\"%s\")\n",
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlElementGetAttr(node=%p, name=\"%s\")\n",
           node, name ? name : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -124,15 +124,15 @@ mxmlElementGetAttr(mxml_node_t *node,	/* I - Element node */
        i > 0;
        i --, attr ++)
   {
-#ifdef DEBUG
-    printf("    %s=\"%s\"\n", attr->name, attr->value);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+    MXML_LOG(MXML_LOG_ARG,"    %s=\"%s\"\n", attr->name, attr->value);
+#endif /* MXML_ENABLE_LOGGING */
 
     if (!strcmp(attr->name, name))
     {
-#ifdef DEBUG
-      printf("    Returning \"%s\"!\n", attr->value);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+      MXML_LOG(MXML_LOG_ARG,"    Returning \"%s\"!\n", attr->value);
+#endif /* MXML_ENABLE_LOGGING */
       return (attr->value);
     }
   }
@@ -141,9 +141,9 @@ mxmlElementGetAttr(mxml_node_t *node,	/* I - Element node */
   * Didn't find attribute, so return NULL...
   */
 
-#ifdef DEBUG
-  puts("    Returning NULL!\n");
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG,"    Returning NULL!\n");
+#endif /* MXML_ENABLE_LOGGING */
 
   return (NULL);
 }
@@ -208,10 +208,10 @@ mxmlElementSetAttr(mxml_node_t *node,	/* I - Element node */
   char	*valuec;			/* Copy of value */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlElementSetAttr(node=%p, name=\"%s\", value=\"%s\")\n",
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlElementSetAttr(node=%p, name=\"%s\", value=\"%s\")\n",
           node, name ? name : "(null)", value ? value : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -251,11 +251,11 @@ mxmlElementSetAttrf(mxml_node_t *node,	/* I - Element node */
   char		*value;			/* Value */
 
 
-#ifdef DEBUG
-  fprintf(stderr,
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG,
           "mxmlElementSetAttrf(node=%p, name=\"%s\", format=\"%s\", ...)\n",
           node, name ? name : "(null)", format ? format : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -319,9 +319,9 @@ mxml_set_attr(mxml_node_t *node,	/* I - Element node */
   */
 
   if (node->value.element.num_attrs == 0)
-    attr = malloc(sizeof(mxml_attr_t));
+    attr = MXML_MALLOC(sizeof(mxml_attr_t));
   else
-    attr = realloc(node->value.element.attrs,
+    attr = MXML_REALLOC(node->value.element.attrs,
                    (node->value.element.num_attrs + 1) * sizeof(mxml_attr_t));
 
   if (!attr)

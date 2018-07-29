@@ -108,10 +108,10 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
 		last;			/* Last entity in search */
 
 
-#ifdef DEBUG
-  printf("mxmlIndexFind(ind=%p, element=\"%s\", value=\"%s\")\n",
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG,"mxmlIndexFind(ind=%p, element=\"%s\", value=\"%s\")\n",
          ind, element ? element : "(null)", value ? value : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -119,11 +119,11 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
 
   if (!ind || (!ind->attr && value))
   {
-#ifdef DEBUG
-    puts("    returning NULL...");
+#ifdef MXML_ENABLE_LOGGING
+    MXML_LOG(MXML_LOG_ARG,"    returning NULL...");
     if (ind)
-      printf("    ind->attr=\"%s\"\n", ind->attr ? ind->attr : "(null)");
-#endif /* DEBUG */
+      MXML_LOG(MXML_LOG_ARG,"    ind->attr=\"%s\"\n", ind->attr ? ind->attr : "(null)");
+#endif /* MXML_ENABLE_LOGGING */
 
     return (NULL);
   }
@@ -142,10 +142,10 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
 
   if (!ind->num_nodes)
   {
-#ifdef DEBUG
-    puts("    returning NULL...");
-    puts("    no nodes!");
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+    MXML_LOG(MXML_LOG_ARG,"    returning NULL...");
+    MXML_LOG(MXML_LOG_ARG,"    no nodes!");
+#endif /* MXML_ENABLE_LOGGING */
 
     return (NULL);
   }
@@ -163,17 +163,17 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
     first = 0;
     last  = ind->num_nodes - 1;
 
-#ifdef DEBUG
-    printf("    find first time, num_nodes=%d...\n", ind->num_nodes);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+    MXML_LOG(MXML_LOG_ARG,"    find first time, num_nodes=%d...\n", ind->num_nodes);
+#endif /* MXML_ENABLE_LOGGING */
 
     while ((last - first) > 1)
     {
       current = (first + last) / 2;
 
-#ifdef DEBUG
-      printf("    first=%d, last=%d, current=%d\n", first, last, current);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+      MXML_LOG(MXML_LOG_ARG,"    first=%d, last=%d, current=%d\n", first, last, current);
+#endif /* MXML_ENABLE_LOGGING */
 
       if ((diff = index_find(ind, element, value, ind->nodes[current])) == 0)
       {
@@ -181,17 +181,17 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
         * Found a match, move back to find the first...
 	*/
 
-#ifdef DEBUG
-        puts("    match!");
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+        MXML_LOG(MXML_LOG_ARG,"    match!");
+#endif /* MXML_ENABLE_LOGGING */
 
         while (current > 0 &&
 	       !index_find(ind, element, value, ind->nodes[current - 1]))
 	  current --;
 
-#ifdef DEBUG
-        printf("    returning first match=%d\n", current);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+        MXML_LOG(MXML_LOG_ARG,"    returning first match=%d\n", current);
+#endif /* MXML_ENABLE_LOGGING */
 
        /*
         * Return the first match and save the index to the next...
@@ -206,9 +206,9 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
       else
 	first = current;
 
-#ifdef DEBUG
-      printf("    diff=%d\n", diff);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+      MXML_LOG(MXML_LOG_ARG,"    diff=%d\n", diff);
+#endif /* MXML_ENABLE_LOGGING */
     }
 
    /*
@@ -222,9 +222,9 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
 	* Found exactly one (or possibly two) match...
 	*/
 
-#ifdef DEBUG
-	printf("    returning only match %d...\n", current);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+	MXML_LOG(MXML_LOG_ARG,"    returning only match %d...\n", current);
+#endif /* MXML_ENABLE_LOGGING */
 
 	ind->cur_node = current + 1;
 
@@ -237,9 +237,9 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
 
     ind->cur_node = ind->num_nodes;
 
-#ifdef DEBUG
-    puts("    returning NULL...");
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+    MXML_LOG(MXML_LOG_ARG,"    returning NULL...");
+#endif /* MXML_ENABLE_LOGGING */
 
     return (NULL);
   }
@@ -250,9 +250,9 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
     * Return the next matching node...
     */
 
-#ifdef DEBUG
-    printf("    returning next match %d...\n", ind->cur_node);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+    MXML_LOG(MXML_LOG_ARG,"    returning next match %d...\n", ind->cur_node);
+#endif /* MXML_ENABLE_LOGGING */
 
     return (ind->nodes[ind->cur_node ++]);
   }
@@ -263,9 +263,9 @@ mxmlIndexFind(mxml_index_t *ind,	/* I - Index to search */
 
   ind->cur_node = ind->num_nodes;
 
-#ifdef DEBUG
-  puts("    returning NULL...");
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG,"    returning NULL...");
+#endif /* MXML_ENABLE_LOGGING */
 
   return (NULL);
 }
@@ -319,10 +319,10 @@ mxmlIndexNew(mxml_node_t *node,		/* I - XML node tree */
   * Range check input...
   */
 
-#ifdef DEBUG
-  printf("mxmlIndexNew(node=%p, element=\"%s\", attr=\"%s\")\n",
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG,"mxmlIndexNew(node=%p, element=\"%s\", attr=\"%s\")\n",
          node, element ? element : "(null)", attr ? attr : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
   if (!node)
     return (NULL);
@@ -331,7 +331,7 @@ mxmlIndexNew(mxml_node_t *node,		/* I - XML node tree */
   * Create a new index...
   */
 
-  if ((ind = calloc(1, sizeof(mxml_index_t))) == NULL)
+  if ((ind = MXML_CALLOC(1, sizeof(mxml_index_t))) == NULL)
   {
     mxml_error("Unable to allocate %d bytes for index - %s",
                sizeof(mxml_index_t), strerror(errno));
@@ -351,9 +351,9 @@ mxmlIndexNew(mxml_node_t *node,		/* I - XML node tree */
     if (ind->num_nodes >= ind->alloc_nodes)
     {
       if (!ind->alloc_nodes)
-        temp = malloc(64 * sizeof(mxml_node_t *));
+        temp = MXML_MALLOC(64 * sizeof(mxml_node_t *));
       else
-        temp = realloc(ind->nodes, (ind->alloc_nodes + 64) * sizeof(mxml_node_t *));
+        temp = MXML_REALLOC(ind->nodes, (ind->alloc_nodes + 64) * sizeof(mxml_node_t *));
 
       if (!temp)
       {
@@ -382,70 +382,70 @@ mxmlIndexNew(mxml_node_t *node,		/* I - XML node tree */
   * Sort nodes based upon the search criteria...
   */
 
-#ifdef DEBUG
+#ifdef MXML_ENABLE_LOGGING
   {
     int i;				/* Looping var */
 
 
-    printf("%d node(s) in index.\n\n", ind->num_nodes);
+    MXML_LOG(MXML_LOG_ARG,"%d node(s) in index.\n\n", ind->num_nodes);
 
     if (attr)
     {
-      printf("Node      Address   Element         %s\n", attr);
-      puts("--------  --------  --------------  ------------------------------");
+      MXML_LOG(MXML_LOG_ARG,"Node      Address   Element         %s\n", attr);
+      MXML_LOG(MXML_LOG_ARG,"--------  --------  --------------  ------------------------------");
 
       for (i = 0; i < ind->num_nodes; i ++)
-	printf("%8d  %-8p  %-14.14s  %s\n", i, ind->nodes[i],
+	MXML_LOG(MXML_LOG_ARG,"%8d  %-8p  %-14.14s  %s\n", i, ind->nodes[i],
 	       ind->nodes[i]->value.element.name,
 	       mxmlElementGetAttr(ind->nodes[i], attr));
     }
     else
     {
-      puts("Node      Address   Element");
-      puts("--------  --------  --------------");
+      MXML_LOG(MXML_LOG_ARG,"Node      Address   Element");
+      MXML_LOG(MXML_LOG_ARG,"--------  --------  --------------");
 
       for (i = 0; i < ind->num_nodes; i ++)
-	printf("%8d  %-8p  %s\n", i, ind->nodes[i],
+	MXML_LOG(MXML_LOG_ARG,"%8d  %-8p  %s\n", i, ind->nodes[i],
 	       ind->nodes[i]->value.element.name);
     }
 
     putchar('\n');
   }
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
   if (ind->num_nodes > 1)
     index_sort(ind, 0, ind->num_nodes - 1);
 
-#ifdef DEBUG
+#ifdef MXML_ENABLE_LOGGING
   {
     int i;				/* Looping var */
 
 
-    puts("After sorting:\n");
+    MXML_LOG(MXML_LOG_ARG,"After sorting:\n");
 
     if (attr)
     {
-      printf("Node      Address   Element         %s\n", attr);
-      puts("--------  --------  --------------  ------------------------------");
+      MXML_LOG(MXML_LOG_ARG,"Node      Address   Element         %s\n", attr);
+      MXML_LOG(MXML_LOG_ARG,"--------  --------  --------------  ------------------------------");
 
       for (i = 0; i < ind->num_nodes; i ++)
-	printf("%8d  %-8p  %-14.14s  %s\n", i, ind->nodes[i],
+	MXML_LOG(MXML_LOG_ARG,"%8d  %-8p  %-14.14s  %s\n", i, ind->nodes[i],
 	       ind->nodes[i]->value.element.name,
 	       mxmlElementGetAttr(ind->nodes[i], attr));
     }
     else
     {
-      puts("Node      Address   Element");
-      puts("--------  --------  --------------");
+      MXML_LOG(MXML_LOG_ARG,"Node      Address   Element");
+      MXML_LOG(MXML_LOG_ARG,"--------  --------  --------------");
 
       for (i = 0; i < ind->num_nodes; i ++)
-	printf("%8d  %-8p  %s\n", i, ind->nodes[i],
+	MXML_LOG(MXML_LOG_ARG,"%8d  %-8p  %s\n", i, ind->nodes[i],
 	       ind->nodes[i]->value.element.name);
     }
 
     putchar('\n');
   }
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Return the new index...
@@ -466,9 +466,9 @@ mxmlIndexNew(mxml_node_t *node,		/* I - XML node tree */
 mxml_node_t *				/* O - First node or @code NULL@ if there is none */
 mxmlIndexReset(mxml_index_t *ind)	/* I - Index to reset */
 {
-#ifdef DEBUG
-  printf("mxmlIndexReset(ind=%p)\n", ind);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG,"mxmlIndexReset(ind=%p)\n", ind);
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...

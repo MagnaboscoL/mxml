@@ -45,10 +45,10 @@ mxmlAdd(mxml_node_t *parent,		/* I - Parent node */
         mxml_node_t *child,		/* I - Child node for where or @code MXML_ADD_TO_PARENT@ */
 	mxml_node_t *node)		/* I - Node to add */
 {
-#ifdef DEBUG
-  fprintf(stderr, "mxmlAdd(parent=%p, where=%d, child=%p, node=%p)\n", parent,
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlAdd(parent=%p, where=%d, child=%p, node=%p)\n", parent,
           where, child, node);
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -57,16 +57,16 @@ mxmlAdd(mxml_node_t *parent,		/* I - Parent node */
   if (!parent || !node)
     return;
 
-#if DEBUG > 1
-  fprintf(stderr, "    BEFORE: node->parent=%p\n", node->parent);
+#if MXML_ENABLE_LOGGING > 1
+  MXML_LOG(MXML_LOG_ARG, "    BEFORE: node->parent=%p\n", node->parent);
   if (parent)
   {
-    fprintf(stderr, "    BEFORE: parent->child=%p\n", parent->child);
-    fprintf(stderr, "    BEFORE: parent->last_child=%p\n", parent->last_child);
-    fprintf(stderr, "    BEFORE: parent->prev=%p\n", parent->prev);
-    fprintf(stderr, "    BEFORE: parent->next=%p\n", parent->next);
+    MXML_LOG(MXML_LOG_ARG, "    BEFORE: parent->child=%p\n", parent->child);
+    MXML_LOG(MXML_LOG_ARG, "    BEFORE: parent->last_child=%p\n", parent->last_child);
+    MXML_LOG(MXML_LOG_ARG, "    BEFORE: parent->prev=%p\n", parent->prev);
+    MXML_LOG(MXML_LOG_ARG, "    BEFORE: parent->next=%p\n", parent->next);
   }
-#endif /* DEBUG > 1 */
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
  /*
   * Remove the node from any existing parent...
@@ -153,16 +153,16 @@ mxmlAdd(mxml_node_t *parent,		/* I - Parent node */
         break;
   }
 
-#if DEBUG > 1
-  fprintf(stderr, "    AFTER: node->parent=%p\n", node->parent);
+#if MXML_ENABLE_LOGGING > 1
+  MXML_LOG(MXML_LOG_ARG, "    AFTER: node->parent=%p\n", node->parent);
   if (parent)
   {
-    fprintf(stderr, "    AFTER: parent->child=%p\n", parent->child);
-    fprintf(stderr, "    AFTER: parent->last_child=%p\n", parent->last_child);
-    fprintf(stderr, "    AFTER: parent->prev=%p\n", parent->prev);
-    fprintf(stderr, "    AFTER: parent->next=%p\n", parent->next);
+    MXML_LOG(MXML_LOG_ARG, "    AFTER: parent->child=%p\n", parent->child);
+    MXML_LOG(MXML_LOG_ARG, "    AFTER: parent->last_child=%p\n", parent->last_child);
+    MXML_LOG(MXML_LOG_ARG, "    AFTER: parent->prev=%p\n", parent->prev);
+    MXML_LOG(MXML_LOG_ARG, "    AFTER: parent->next=%p\n", parent->next);
   }
-#endif /* DEBUG > 1 */
+#endif /* MXML_ENABLE_LOGGING > 1 */
 }
 
 
@@ -180,9 +180,9 @@ mxmlDelete(mxml_node_t *node)		/* I - Node to delete */
 		*next;			/* Next node */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlDelete(node=%p)\n", node);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlDelete(node=%p)\n", node);
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -289,10 +289,10 @@ mxmlNewCDATA(mxml_node_t *parent,	/* I - Parent node or @code MXML_NO_PARENT@ */
   mxml_node_t	*node;			/* New node */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlNewCDATA(parent=%p, data=\"%s\")\n",
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlNewCDATA(parent=%p, data=\"%s\")\n",
           parent, data ? data : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -332,10 +332,10 @@ mxmlNewCustom(
   mxml_node_t	*node;			/* New node */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlNewCustom(parent=%p, data=%p, destroy=%p)\n", parent,
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlNewCustom(parent=%p, data=%p, destroy=%p)\n", parent,
           data, destroy);
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Create the node and set the value...
@@ -366,10 +366,10 @@ mxmlNewElement(mxml_node_t *parent,	/* I - Parent node or @code MXML_NO_PARENT@ 
   mxml_node_t	*node;			/* New node */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlNewElement(parent=%p, name=\"%s\")\n", parent,
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlNewElement(parent=%p, name=\"%s\")\n", parent,
           name ? name : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -404,9 +404,9 @@ mxmlNewInteger(mxml_node_t *parent,	/* I - Parent node or @code MXML_NO_PARENT@ 
   mxml_node_t	*node;			/* New node */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlNewInteger(parent=%p, integer=%d)\n", parent, integer);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlNewInteger(parent=%p, integer=%d)\n", parent, integer);
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Create the node and set the element name...
@@ -435,10 +435,10 @@ mxmlNewOpaque(mxml_node_t *parent,	/* I - Parent node or @code MXML_NO_PARENT@ *
   mxml_node_t	*node;			/* New node */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlNewOpaque(parent=%p, opaque=\"%s\")\n", parent,
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlNewOpaque(parent=%p, opaque=\"%s\")\n", parent,
           opaque ? opaque : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -476,9 +476,9 @@ mxmlNewOpaquef(mxml_node_t *parent,	/* I - Parent node or @code MXML_NO_PARENT@ 
   va_list	ap;			/* Pointer to arguments */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlNewOpaquef(parent=%p, format=\"%s\", ...)\n", parent, format ? format : "(null)");
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlNewOpaquef(parent=%p, format=\"%s\", ...)\n", parent, format ? format : "(null)");
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -519,9 +519,9 @@ mxmlNewReal(mxml_node_t *parent,	/* I - Parent node or @code MXML_NO_PARENT@ */
   mxml_node_t	*node;			/* New node */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlNewReal(parent=%p, real=%g)\n", parent, real);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlNewReal(parent=%p, real=%g)\n", parent, real);
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Create the node and set the element name...
@@ -552,10 +552,10 @@ mxmlNewText(mxml_node_t *parent,	/* I - Parent node or @code MXML_NO_PARENT@ */
   mxml_node_t	*node;			/* New node */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlNewText(parent=%p, whitespace=%d, string=\"%s\")\n",
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlNewText(parent=%p, whitespace=%d, string=\"%s\")\n",
           parent, whitespace, string ? string : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -598,10 +598,10 @@ mxmlNewTextf(mxml_node_t *parent,	/* I - Parent node or @code MXML_NO_PARENT@ */
   va_list	ap;			/* Pointer to arguments */
 
 
-#ifdef DEBUG
-  fprintf(stderr, "mxmlNewTextf(parent=%p, whitespace=%d, format=\"%s\", ...)\n",
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlNewTextf(parent=%p, whitespace=%d, format=\"%s\", ...)\n",
           parent, whitespace, format ? format : "(null)");
-#endif /* DEBUG */
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -638,9 +638,9 @@ mxmlNewTextf(mxml_node_t *parent,	/* I - Parent node or @code MXML_NO_PARENT@ */
 void
 mxmlRemove(mxml_node_t *node)		/* I - Node to remove */
 {
-#ifdef DEBUG
-  fprintf(stderr, "mxmlRemove(node=%p)\n", node);
-#endif /* DEBUG */
+#ifdef MXML_ENABLE_LOGGING
+  MXML_LOG(MXML_LOG_ARG, "mxmlRemove(node=%p)\n", node);
+#endif /* MXML_ENABLE_LOGGING */
 
  /*
   * Range check input...
@@ -653,18 +653,18 @@ mxmlRemove(mxml_node_t *node)		/* I - Node to remove */
   * Remove from parent...
   */
 
-#if DEBUG > 1
-  fprintf(stderr, "    BEFORE: node->parent=%p\n", node->parent);
+#if MXML_ENABLE_LOGGING > 1
+  MXML_LOG(MXML_LOG_ARG, "    BEFORE: node->parent=%p\n", node->parent);
   if (node->parent)
   {
-    fprintf(stderr, "    BEFORE: node->parent->child=%p\n", node->parent->child);
-    fprintf(stderr, "    BEFORE: node->parent->last_child=%p\n", node->parent->last_child);
+    MXML_LOG(MXML_LOG_ARG, "    BEFORE: node->parent->child=%p\n", node->parent->child);
+    MXML_LOG(MXML_LOG_ARG, "    BEFORE: node->parent->last_child=%p\n", node->parent->last_child);
   }
-  fprintf(stderr, "    BEFORE: node->child=%p\n", node->child);
-  fprintf(stderr, "    BEFORE: node->last_child=%p\n", node->last_child);
-  fprintf(stderr, "    BEFORE: node->prev=%p\n", node->prev);
-  fprintf(stderr, "    BEFORE: node->next=%p\n", node->next);
-#endif /* DEBUG > 1 */
+  MXML_LOG(MXML_LOG_ARG, "    BEFORE: node->child=%p\n", node->child);
+  MXML_LOG(MXML_LOG_ARG, "    BEFORE: node->last_child=%p\n", node->last_child);
+  MXML_LOG(MXML_LOG_ARG, "    BEFORE: node->prev=%p\n", node->prev);
+  MXML_LOG(MXML_LOG_ARG, "    BEFORE: node->next=%p\n", node->next);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
   if (node->prev)
     node->prev->next = node->next;
@@ -680,18 +680,18 @@ mxmlRemove(mxml_node_t *node)		/* I - Node to remove */
   node->prev   = NULL;
   node->next   = NULL;
 
-#if DEBUG > 1
-  fprintf(stderr, "    AFTER: node->parent=%p\n", node->parent);
+#if MXML_ENABLE_LOGGING > 1
+  MXML_LOG(MXML_LOG_ARG, "    AFTER: node->parent=%p\n", node->parent);
   if (node->parent)
   {
-    fprintf(stderr, "    AFTER: node->parent->child=%p\n", node->parent->child);
-    fprintf(stderr, "    AFTER: node->parent->last_child=%p\n", node->parent->last_child);
+    MXML_LOG(MXML_LOG_ARG, "    AFTER: node->parent->child=%p\n", node->parent->child);
+    MXML_LOG(MXML_LOG_ARG, "    AFTER: node->parent->last_child=%p\n", node->parent->last_child);
   }
-  fprintf(stderr, "    AFTER: node->child=%p\n", node->child);
-  fprintf(stderr, "    AFTER: node->last_child=%p\n", node->last_child);
-  fprintf(stderr, "    AFTER: node->prev=%p\n", node->prev);
-  fprintf(stderr, "    AFTER: node->next=%p\n", node->next);
-#endif /* DEBUG > 1 */
+  MXML_LOG(MXML_LOG_ARG, "    AFTER: node->child=%p\n", node->child);
+  MXML_LOG(MXML_LOG_ARG, "    AFTER: node->last_child=%p\n", node->last_child);
+  MXML_LOG(MXML_LOG_ARG, "    AFTER: node->prev=%p\n", node->prev);
+  MXML_LOG(MXML_LOG_ARG, "    AFTER: node->next=%p\n", node->next);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 }
 
 
@@ -833,26 +833,26 @@ mxml_new(mxml_node_t *parent,		/* I - Parent node */
   mxml_node_t	*node;			/* New node */
 
 
-#if DEBUG > 1
-  fprintf(stderr, "mxml_new(parent=%p, type=%d)\n", parent, type);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+  MXML_LOG(MXML_LOG_ARG, "mxml_new(parent=%p, type=%d)\n", parent, type);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
  /*
   * Allocate memory for the node...
   */
 
-  if ((node = calloc(1, sizeof(mxml_node_t))) == NULL)
+  if ((node = MXML_CALLOC(1, sizeof(mxml_node_t))) == NULL)
   {
-#if DEBUG > 1
-    fputs("    returning NULL\n", stderr);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+    MXML_LOG(MXML_LOG_ARG, "    returning NULL\n");
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
     return (NULL);
   }
 
-#if DEBUG > 1
-  fprintf(stderr, "    returning %p\n", node);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+  MXML_LOG(MXML_LOG_ARG, "    returning %p\n", node);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
  /*
   * Set the node type...

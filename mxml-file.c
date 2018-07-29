@@ -251,7 +251,7 @@ mxmlSaveAllocString(
   * new buffer...
   */
 
-  if ((s = malloc(bytes + 1)) == NULL)
+  if ((s = MXML_MALLOC(bytes + 1)) == NULL)
     return (NULL);
 
   mxmlSaveString(node, s, bytes + 1, cb);
@@ -528,7 +528,7 @@ mxmlSAXLoadString(
  * The load function accepts a node pointer and a data string and must
  * return 0 on success and non-zero on error.
  *
- * The save function accepts a node pointer and must return a malloc'd
+ * The save function accepts a node pointer and must return a MXML_MALLOC'd
  * string on success and @code NULL@ on error.
  *
  */
@@ -605,7 +605,7 @@ mxml_add_char(int  ch,			/* I  - Character to add */
     else
       (*bufsize) += 1024;
 
-    if ((newbuffer = realloc(*buffer, *bufsize)) == NULL)
+    if ((newbuffer = MXML_REALLOC(*buffer, *bufsize)) == NULL)
     {
       free(*buffer);
 
@@ -702,9 +702,9 @@ mxml_fd_getc(void *p,			/* I  - File descriptor buffer */
 
 	if (!(ch & 0x80))
 	{
-#if DEBUG > 1
-          printf("mxml_fd_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+          MXML_LOG(MXML_LOG_ARG,"mxml_fd_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
 	  if (mxml_bad_char(ch))
 	  {
@@ -963,9 +963,9 @@ mxml_fd_getc(void *p,			/* I  - File descriptor buffer */
 	break;
   }
 
-#if DEBUG > 1
-  printf("mxml_fd_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+  MXML_LOG(MXML_LOG_ARG,"mxml_fd_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
   return (ch);
 }
@@ -1023,7 +1023,7 @@ mxml_fd_read(_mxml_fdbuf_t *buf)		/* I - File descriptor buffer */
   * Read from the file descriptor...
   */
 
-  while ((bytes = (int)read(buf->fd, buf->buffer, sizeof(buf->buffer))) < 0)
+  while ((bytes = (int)MXML_READ(buf->fd, buf->buffer, sizeof(buf->buffer))) < 0)
 #ifdef EINTR
     if (errno != EAGAIN && errno != EINTR)
 #else
@@ -1075,7 +1075,7 @@ mxml_fd_write(_mxml_fdbuf_t *buf)	/* I - File descriptor buffer */
   */
 
   for (ptr = buf->buffer; ptr < buf->current; ptr += bytes)
-    if ((bytes = (int)write(buf->fd, ptr, buf->current - ptr)) < 0)
+    if ((bytes = (int)MXML_WRITE(buf->fd, ptr, buf->current - ptr)) < 0)
       return (-1);
 
  /*
@@ -1106,7 +1106,7 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
   */
 
   fp = (FILE *)p;
-  ch = getc(fp);
+  ch = MXML_GET_C(fp);
 
   if (ch == EOF)
     return (EOF);
@@ -1127,9 +1127,9 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
 	    return (EOF);
 	  }
 
-#if DEBUG > 1
-          printf("mxml_file_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+          MXML_LOG(MXML_LOG_ARG,"mxml_file_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
 	  return (ch);
         }
@@ -1139,7 +1139,7 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
 	  * UTF-16 big-endian BOM?
 	  */
 
-          ch = getc(fp);
+          ch = MXML_GET_C(fp);
 	  if (ch != 0xff)
 	    return (EOF);
 
@@ -1153,7 +1153,7 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
 	  * UTF-16 little-endian BOM?
 	  */
 
-          ch = getc(fp);
+          ch = MXML_GET_C(fp);
 	  if (ch != 0xfe)
 	    return (EOF);
 
@@ -1167,7 +1167,7 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
 	  * Two-byte value...
 	  */
 
-	  if ((temp = getc(fp)) == EOF || (temp & 0xc0) != 0x80)
+	  if ((temp = MXML_GET_C(fp)) == EOF || (temp & 0xc0) != 0x80)
 	    return (EOF);
 
 	  ch = ((ch & 0x1f) << 6) | (temp & 0x3f);
@@ -1184,12 +1184,12 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
 	  * Three-byte value...
 	  */
 
-	  if ((temp = getc(fp)) == EOF || (temp & 0xc0) != 0x80)
+	  if ((temp = MXML_GET_C(fp)) == EOF || (temp & 0xc0) != 0x80)
 	    return (EOF);
 
 	  ch = ((ch & 0x0f) << 6) | (temp & 0x3f);
 
-	  if ((temp = getc(fp)) == EOF || (temp & 0xc0) != 0x80)
+	  if ((temp = MXML_GET_C(fp)) == EOF || (temp & 0xc0) != 0x80)
 	    return (EOF);
 
 	  ch = (ch << 6) | (temp & 0x3f);
@@ -1213,17 +1213,17 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
 	  * Four-byte value...
 	  */
 
-	  if ((temp = getc(fp)) == EOF || (temp & 0xc0) != 0x80)
+	  if ((temp = MXML_GET_C(fp)) == EOF || (temp & 0xc0) != 0x80)
 	    return (EOF);
 
 	  ch = ((ch & 0x07) << 6) | (temp & 0x3f);
 
-	  if ((temp = getc(fp)) == EOF || (temp & 0xc0) != 0x80)
+	  if ((temp = MXML_GET_C(fp)) == EOF || (temp & 0xc0) != 0x80)
 	    return (EOF);
 
 	  ch = (ch << 6) | (temp & 0x3f);
 
-	  if ((temp = getc(fp)) == EOF || (temp & 0xc0) != 0x80)
+	  if ((temp = MXML_GET_C(fp)) == EOF || (temp & 0xc0) != 0x80)
 	    return (EOF);
 
 	  ch = (ch << 6) | (temp & 0x3f);
@@ -1251,7 +1251,7 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
         * Read UTF-16 big-endian char...
 	*/
 
-	ch = (ch << 8) | getc(fp);
+	ch = (ch << 8) | MXML_GET_C(fp);
 
 	if (mxml_bad_char(ch))
 	{
@@ -1265,8 +1265,8 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
 	  * Multi-word UTF-16 char...
 	  */
 
-          int lch = getc(fp);
-          lch = (lch << 8) | getc(fp);
+          int lch = MXML_GET_C(fp);
+          lch = (lch << 8) | MXML_GET_C(fp);
 
           if (lch < 0xdc00 || lch >= 0xdfff)
 	    return (EOF);
@@ -1280,7 +1280,7 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
         * Read UTF-16 little-endian char...
 	*/
 
-	ch |= (getc(fp) << 8);
+	ch |= (MXML_GET_C(fp) << 8);
 
         if (mxml_bad_char(ch))
 	{
@@ -1294,8 +1294,8 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
 	  * Multi-word UTF-16 char...
 	  */
 
-          int lch = getc(fp);
-          lch |= (getc(fp) << 8);
+          int lch = MXML_GET_C(fp);
+          lch |= (MXML_GET_C(fp) << 8);
 
           if (lch < 0xdc00 || lch >= 0xdfff)
 	    return (EOF);
@@ -1305,9 +1305,9 @@ mxml_file_getc(void *p,			/* I  - Pointer to file */
 	break;
   }
 
-#if DEBUG > 1
-  printf("mxml_file_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+  MXML_LOG(MXML_LOG_ARG,"mxml_file_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
   return (ch);
 }
@@ -1426,7 +1426,7 @@ mxml_load_data(
   * Read elements and other nodes from the file...
   */
 
-  if ((buffer = malloc(64)) == NULL)
+  if ((buffer = MXML_MALLOC(64)) == NULL)
   {
     mxml_error("Unable to allocate string buffer!");
     return (NULL);
@@ -1958,7 +1958,7 @@ mxml_load_data(
       else
       {
        /*
-        * Handle open tag...
+        * Handle MXML_OPEN tag...
 	*/
 
         if (!parent && first)
@@ -2129,7 +2129,7 @@ mxml_parse_element(
   * Initialize the name and value buffers...
   */
 
-  if ((name = malloc(64)) == NULL)
+  if ((name = MXML_MALLOC(64)) == NULL)
   {
     mxml_error("Unable to allocate memory for name!");
     return (EOF);
@@ -2137,7 +2137,7 @@ mxml_parse_element(
 
   namesize = 64;
 
-  if ((value = malloc(64)) == NULL)
+  if ((value = MXML_MALLOC(64)) == NULL)
   {
     free(name);
     mxml_error("Unable to allocate memory for value!");
@@ -2152,9 +2152,9 @@ mxml_parse_element(
 
   while ((ch = (*getc_cb)(p, encoding)) != EOF)
   {
-#if DEBUG > 1
-    fprintf(stderr, "parse_element: ch='%c'\n", ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+    MXML_LOG(MXML_LOG_ARG, "parse_element: ch='%c'\n", ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
    /*
     * Skip leading whitespace...
@@ -2400,9 +2400,9 @@ mxml_string_getc(void *p,		/* I  - Pointer to file */
       case ENCODE_UTF8 :
 	  if (!(ch & 0x80))
 	  {
-#if DEBUG > 1
-            printf("mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+            MXML_LOG(MXML_LOG_ARG,"mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
 	    if (mxml_bad_char(ch))
 	    {
@@ -2460,9 +2460,9 @@ mxml_string_getc(void *p,		/* I  - Pointer to file */
 	      return (EOF);
 	    }
 
-#if DEBUG > 1
-            printf("mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+            MXML_LOG(MXML_LOG_ARG,"mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
 	    return (ch);
 	  }
@@ -2493,9 +2493,9 @@ mxml_string_getc(void *p,		/* I  - Pointer to file */
 	    if (ch == 0xfeff)
 	      return (mxml_string_getc(p, encoding));
 
-#if DEBUG > 1
-            printf("mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+            MXML_LOG(MXML_LOG_ARG,"mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
 	    return (ch);
 	  }
@@ -2521,9 +2521,9 @@ mxml_string_getc(void *p,		/* I  - Pointer to file */
 	      return (EOF);
 	    }
 
-#if DEBUG > 1
-            printf("mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+            MXML_LOG(MXML_LOG_ARG,"mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
 	    return (ch);
 	  }
@@ -2565,9 +2565,9 @@ mxml_string_getc(void *p,		/* I  - Pointer to file */
             ch = (((ch & 0x3ff) << 10) | (lch & 0x3ff)) + 0x10000;
 	  }
 
-#if DEBUG > 1
-          printf("mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+          MXML_LOG(MXML_LOG_ARG,"mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
 	  return (ch);
 
@@ -2613,9 +2613,9 @@ mxml_string_getc(void *p,		/* I  - Pointer to file */
             ch = (((ch & 0x3ff) << 10) | (lch & 0x3ff)) + 0x10000;
 	  }
 
-#if DEBUG > 1
-          printf("mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
-#endif /* DEBUG > 1 */
+#if MXML_ENABLE_LOGGING > 1
+          MXML_LOG(MXML_LOG_ARG,"mxml_string_getc: %c (0x%04x)\n", ch < ' ' ? '.' : ch, ch);
+#endif /* MXML_ENABLE_LOGGING > 1 */
 
 	  return (ch);
     }

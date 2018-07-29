@@ -71,7 +71,7 @@ _mxml_strdup(const char *s)		/* I - String to duplicate */
   if (s == NULL)
     return (NULL);
 
-  if ((t = malloc(strlen(s) + 1)) == NULL)
+  if ((t = MXML_MALLOC(strlen(s) + 1)) == NULL)
     return (NULL);
 
   return (strcpy(t, s));
@@ -553,7 +553,7 @@ _mxml_vstrdupf(const char *format,	/* I - Printf-style format string */
   * buffer...
   */
 
-  if ((buffer = calloc(1, bytes + 1)) != NULL)
+  if ((buffer = MXML_CALLOC(1, bytes + 1)) != NULL)
     vsnprintf(buffer, bytes + 1, format, ap);
 
  /*
