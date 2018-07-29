@@ -1723,7 +1723,7 @@ mxml_load_data(
           goto error;
 	}
 
-	if ((node = mxmlNewElement(parent, buffer)) == NULL)
+	if ((node = mxmlNewOpaque(parent, buffer)) == NULL)
 	{
 	 /*
 	  * Print error and return...
